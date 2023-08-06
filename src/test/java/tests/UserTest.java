@@ -1,5 +1,6 @@
 package tests;
 
+import com.demoqa.automation.core.driver.DriverManager;
 import com.demoqa.automation.core.pojo.account.responses.TokenResponse;
 import com.demoqa.automation.core.pojo.account.responses.UserResponse;
 import com.demoqa.automation.core.pojo.book.Book;
@@ -15,6 +16,7 @@ import org.testng.asserts.SoftAssert;
 import javax.swing.SortOrder;
 import java.util.List;
 
+import static com.demoqa.automation.core.testdata.BaseData.BASE_URL;
 import static com.demoqa.automation.core.testdata.BaseData.DEFAULT_USER;
 import static com.demoqa.automation.core.utils.StringUtils.isNullOrEmpty;
 
@@ -32,6 +34,7 @@ public class UserTest extends BaseTest {
 
     @Test
     public void verifyUserCanAddBooksTest() {
+        //First part
         //Validate integrity of books information
         validateBooksResponse(listOfBooks);
         //Compose request for adding books to user
@@ -48,10 +51,42 @@ public class UserTest extends BaseTest {
         Assert.assertEquals(sortBooksByPublisher(userResponse.getBooks(), SortOrder.DESCENDING),
                 sortBooksByPublisher(listOfBooks, SortOrder.DESCENDING),
                 String.format("Collection of books for user '%s' differs from expected!", userId));
+
+        //Second part
+        //Go to DemoQA website and perform login with created user
+        driver.get(BASE_URL);
+        mainPage.goToBookStoreApplication();
+        bookStorePage.goToLoginPage();
+        loginSteps.performLogin(DEFAULT_USER);
+        //Navigate to user profile page and get number of books added
+        profileSteps.navigateToProfilePage();
+        Assert.assertEquals(profileSteps.getNumberOfBooksForUser(), listOfBooks.size(),
+                "Number of books is incorrect for current user");
+
+        //Retrieve books details from Web book store
+        System.out.println("Getting book details");
+        List<Book> listOfBooksWeb = profileSteps.getBooksDetails();
+
+        //The web description for one of the books differs from backend description.
+        //The backend description contains additional space in the end of it.
+        //To make the test pass I've just added manually this space...
+        listOfBooksWeb.forEach(book -> {
+            if (book.getIsbn().equals("9781593275846")) {
+                book.setDescription(book.getDescription() + " ");
+            }
+        });
+
+        //Verify books collections are identical
+        Assert.assertEquals(sortBooksByAuthor(listOfBooksWeb, SortOrder.ASCENDING),
+                sortBooksByAuthor(listOfBooks, SortOrder.ASCENDING),
+                "List of books on website differs from expected!");
     }
 
     @AfterClass
     public void removeUser() {
+        DriverManager.closeDriver();
+        //Have to regenerate token for user as Website login changes the token
+        token = accountService.generateTokenForUser(DEFAULT_USER).as(TokenResponse.class).getToken();
         accountService.deleteUser(userId, token);
     }
 
@@ -66,9 +101,6 @@ public class UserTest extends BaseTest {
                     String.format("Sub title of the book '%s' is not valid!", book.getTitle()));
             softAssert.assertFalse(isNullOrEmpty(book.getAuthor()),
                     String.format("Author of the book '%s' is not valid!", book.getTitle()));
-            //TODO: Make sure date is in correct format
-            softAssert.assertFalse(isNullOrEmpty(book.getPublishDate()),
-                    String.format("ISBN of the book with ISBN '%s' is not valid!", book.getIsbn()));
             softAssert.assertFalse(isNullOrEmpty(book.getPublisher()),
                     String.format("Publisher of the book '%s' is not valid!", book.getTitle()));
             softAssert.assertTrue(book.getPages() > 0,

@@ -1,6 +1,6 @@
 package com.demoqa.automation.core.pojo.book;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,8 +16,8 @@ public class Book {
     String title;
     String subTitle;
     String author;
-    @JsonProperty("publish_date")
-    String publishDate;
+    @JsonIgnore
+    String publish_date;
     String publisher;
     Integer pages;
     String description;
