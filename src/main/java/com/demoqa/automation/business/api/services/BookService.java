@@ -37,14 +37,14 @@ public class BookService extends BaseService {
 
     private static RequestSpecification setRequestSpecification() {
         return new RequestSpecBuilder()
-                .setBaseUri(BASE_API_URL)
+                .setBaseUri(BASE_URL)
                 .setBasePath(BASE_PATH_BOOK_STORE)
                 .build().log().all().contentType(ContentType.JSON).accept(ContentType.JSON);
     }
 
     private static RequestSpecification setRequestSpecificationWithToken(String token) {
         return new RequestSpecBuilder()
-                .setBaseUri(BASE_API_URL)
+                .setBaseUri(BASE_URL)
                 .setBasePath(BASE_PATH_BOOK_STORE)
                 .addHeader("Authorization", "Bearer " + token)
                 .build().log().all().contentType(ContentType.JSON).accept(ContentType.JSON);

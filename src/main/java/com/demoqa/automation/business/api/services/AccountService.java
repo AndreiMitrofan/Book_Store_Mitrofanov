@@ -8,7 +8,7 @@ import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import static com.demoqa.automation.core.testdata.BaseData.BASE_API_URL;
+import static com.demoqa.automation.core.testdata.BaseData.BASE_URL;
 import static com.demoqa.automation.core.testdata.BaseData.BASE_PATH_ACCOUNT;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.*;
@@ -49,14 +49,14 @@ public class AccountService extends BaseService {
 
     private static RequestSpecification setRequestSpecification() {
         return new RequestSpecBuilder()
-                .setBaseUri(BASE_API_URL)
+                .setBaseUri(BASE_URL)
                 .setBasePath(BASE_PATH_ACCOUNT)
                 .build().log().all().contentType(ContentType.JSON).accept(ContentType.JSON);
     }
 
     private static RequestSpecification setRequestSpecificationWithToken(String token) {
         return new RequestSpecBuilder()
-                .setBaseUri(BASE_API_URL)
+                .setBaseUri(BASE_URL)
                 .setBasePath(BASE_PATH_ACCOUNT)
                 .addHeader("Authorization", "Bearer " + token)
                 .build().log().all().contentType(ContentType.JSON).accept(ContentType.JSON);

@@ -18,6 +18,8 @@
         <lombok.version>1.18.24</lombok.version>
         <jackson.annotations.version>2.14.0</jackson.annotations.version>
         <jackson.databind.version>2.14.0</jackson.databind.version>
+        <webdriver.bonigarcia.version>5.4.1</webdriver.bonigarcia.version>
+        <selenium.version>4.11.0</selenium.version>
     </properties>
 
     <dependencies>
@@ -47,6 +49,21 @@
             <artifactId>rest-assured</artifactId>
             <version>${rest.assured.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdriver.bonigarcia.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-chrome-driver</artifactId>
+            <version>${selenium.version}</version>
         </dependency>
     </dependencies>
 
